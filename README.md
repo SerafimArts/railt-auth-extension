@@ -19,28 +19,32 @@ Your application should use the [Laravel Provider](https://github.com/railt/lara
 
 ### Authenticated
 
+The field that contains the directive `@auth` is only available to an authenticated user.
+
 ```graphql
 type Example {
-    field: Result! @auth 
-        # This field is only available to an authenticated user
+    field: Result! @auth
 }
 ``` 
 
 ### Guest
 
+The field that contains the directive `@guest` is only available to a guest (non-authenticated user).
+
 ```graphql
 type Example {
-    field: Result! @guest 
-        # This field is only available to a guest (non-authenticated user)
+    field: Result! @guest
 }
 ``` 
 
 ### Authorization
 
+The field that contains the directive `@can(role: String!)`:
+1. Is only available to an authenticated user.
+2. Should pass the authorization gate defined in `role` argument.
+
 ```graphql
 type Example {
-    field: Result! @can(role: "some") 
-        # 1. This field is only available to an authenticated user
-        # 2. Authenticated user should pass the "some" authorization gate
+    field: Result! @can(role: "some")
 }
 ```
