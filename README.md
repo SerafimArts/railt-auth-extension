@@ -1,10 +1,8 @@
 # Railt Authorization
 
-Railt framework authorization system for Laravel framework.
+Your application should use the [Laravel Provider](https://github.com/railt/laravel-provider)
 
 ## Installation
-
-Your application should use the [Laravel Provider](https://github.com/railt/laravel-provider)
 
 - `composer require serafim/railt-authorization`
 - Add into `config/railt.php`:
