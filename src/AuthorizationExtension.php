@@ -58,7 +58,7 @@ class AuthorizationExtension extends BaseExtension
     private function auth(FieldDefinition $field): bool
     {
         if ($field->hasDirective('auth')) {
-            return $this->make(Guard::class)->check();
+            return $this->isAuthenticatable();
         }
 
         return true;
@@ -71,7 +71,7 @@ class AuthorizationExtension extends BaseExtension
     private function guest(FieldDefinition $field): bool
     {
         if ($field->hasDirective('guest')) {
-            return $this->make(Guard::class)->guest();
+            return ! $this->isAuthenticatable();
         }
 
         return true;
@@ -84,22 +84,35 @@ class AuthorizationExtension extends BaseExtension
     private function gate(FieldDefinition $field): bool
     {
         if ($field->hasDirective('can')) {
-            if ($this->guest($field)) {
+            if (! $this->isAuthenticatable()) {
                 return false;
             }
 
-            /** @var Authorizable $user */
-            $user = $this->make(Authorizable::class);
-
             foreach ($field->getDirectives('can') as $gate) {
-                $role = $gate->getPassedArgument('role');
-
-                if (! $user->can($role, [$field])) {
+                if (! $this->hasRole($gate->getPassedArgument('role'), $field)) {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param string $role
+     * @param FieldDefinition $field
+     * @return bool
+     */
+    private function hasRole(string $role, FieldDefinition $field): bool
+    {
+        return $this->make(Authorizable::class)->can($role, [$field]);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isAuthenticatable(): bool
+    {
+        return $this->make(Guard::class)->check();
     }
 }
